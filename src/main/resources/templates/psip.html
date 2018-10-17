@@ -1,0 +1,80 @@
+
+<table border="1">
+	<tr>
+		<td colspan="5">
+			<#if Target??>
+				<h3>Target: ${Target}</h3>
+			</#if>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<#if Practice??>
+				<h2>Practice: ${Practice}</h2>
+			</#if>
+		</td>
+		<td>
+			<#if Date??>
+				<h2>Date: ${Date}</h2>
+			</#if>
+		</td>
+		<td>
+			<#if Score??>
+				<h2>Score (0-5): ${Score}</h2>
+			</#if>
+		</td>
+		<td>Comments</td>
+	</tr>
+	<tr>
+		<td colspan="4">Score Descriptions (Key)</td>
+		<td rowspan="7"></td>
+	</tr>
+	<tr>
+		<td width="20">0</td>
+		<td colspan="3">
+			<#if Score_0??>
+				${Score_0}
+			</#if>
+		</td>
+	</tr>
+	<tr>
+		<td>1</td>
+		<td colspan="3">
+			<#if Score_1??>
+				${Score_1}
+			</#if>
+		</td>
+	</tr>
+	<tr>
+		<td>2</td>
+		<td colspan="3">
+			<#if Score_2??>
+				${Score_2}
+			</#if>
+		</td>
+	</tr>
+	<tr>
+		<td>3</td>
+		<td colspan="3">
+			<#if Score_3??>
+				${Score_3}
+			</#if>
+		</td>
+	</tr>
+	<tr>
+		<td>4</td>
+		<td colspan="3">
+			<#if Score_4??>
+				${Score_4}
+			</#if>
+		</td>
+	</tr>
+	<tr>
+		<td>5</td>
+		<td colspan="3">
+			<#if Score_4??>
+				${Score_4}
+			</#if>
+		</td>
+	</tr>
+</table>
