@@ -105,10 +105,10 @@ public class PublicController {
 			
 			DOMAnalyzer da = new DOMAnalyzer(doc, src.getURL());
 			da.setMediaSpec(media);
-			da.attributesToStyles(); //convert the HTML presentation attributes to inline styles
+//			da.attributesToStyles(); //convert the HTML presentation attributes to inline styles
 			da.addStyleSheet(null, CSSNorm.stdStyleSheet(), DOMAnalyzer.Origin.AGENT); //use the standard style sheet
-			da.addStyleSheet(null, CSSNorm.userStyleSheet(), DOMAnalyzer.Origin.AGENT); //use the additional style sheet
-	        da.addStyleSheet(null, CSSNorm.formsStyleSheet(), DOMAnalyzer.Origin.AGENT); //render form fields using css
+//			da.addStyleSheet(null, CSSNorm.userStyleSheet(), DOMAnalyzer.Origin.AGENT); //use the additional style sheet
+//	        da.addStyleSheet(null, CSSNorm.formsStyleSheet(), DOMAnalyzer.Origin.AGENT); //render form fields using css
 	        da.getStyleSheets(); //load the author style sheets
 	        
 	        BrowserCanvas contentCanvas = new BrowserCanvas(da.getRoot(), da, src.getURL());
@@ -123,8 +123,6 @@ public class PublicController {
 	        ImageIO.write(contentCanvas.getImage(), "png", tmp);
 	        tmp.close();
 
-//	        ImageIO.write(contentCanvas.getImage(), "png", response.getOutputStream());
-	        
 	        src.close();
 	        
 	        ByteArrayInputStream b = new ByteArrayInputStream(tmp.toByteArray());

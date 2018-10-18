@@ -1,80 +1,172 @@
-
-<table border="1">
+<head>
+<style>
+table, th, td {
+   border: 1px solid white;
+   padding: 5px;
+   border-spacing: 0;
+   font-family: Arial, Helvetica, sans-serif;
+   font-size: small;
+}
+table {
+	table-layout: fixed;
+    border-collapse: collapse;
+}
+td.first {
+	color: white;
+	font-weight: bold;
+	background: #5793d0;
+	border-right: none
+}
+td.target {
+	color: white;
+	font-weight: bold;
+	background: #5793d0;
+	border-left: none
+}
+td.practice_title {
+	color: white;
+	background: #2b2c76;
+	border-right: none
+}
+td.date_title {
+	color: white;
+	background: #2b2c76;
+	width: 10px;
+	border-right: none
+}
+td.score_title {
+	color: white;
+	background: #2b2c76;
+	width: 70px;
+	border-right: none
+}
+td.practice_body {
+	color: white;
+	font-weight: bold;
+	font-size: large;
+	background: #2b2c76;
+	border-left: none
+}
+td.date_body {
+	color: white;
+	font-weight: bold;
+	font-size: large;
+	width: 50px;
+	background: #2b2c76;
+	text-align: center;
+	border-left: none
+}
+td.score_body {
+	color: white;
+	font-weight: bold;
+	font-size: large;
+	width: 20px;
+	background: #2b2c76;
+	text-align: center;
+	border-left: none
+}
+td.comment_title {
+	color: white;
+	background: #757070;
+	text-align: center
+}
+td.comment_body {
+	color: black;
+	background: #f2f2f2
+}
+td.score {
+	text-align: center
+}
+tr:nth-child(even) {background-color: #cdd4ea;}
+tr:nth-child(odd) {background-color: #e8ebf5;}
+</style>
+</head>
+<body>
+<table width="75%">
 	<tr>
-		<td colspan="5">
+		<td class="first">Target:</td>
+		<td colspan="6" class="target">
 			<#if Target??>
-				<h3>Target: ${Target}</h3>
+				${Target}
 			</#if>
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2">
+		<td class="practice_title">Practice:</td>
+		<td class="practice_body">
 			<#if Practice??>
-				<h2>Practice: ${Practice}</h2>
+				${Practice}
 			</#if>
 		</td>
-		<td>
+		<td class="date_title">Date:</td>
+		<td class="date_body">
 			<#if Date??>
-				<h2>Date: ${Date}</h2>
+				${Date}
 			</#if>
 		</td>
-		<td>
+		<td class="score_title">Score (0-5):</td>
+		<td class="score_body">
 			<#if Score??>
-				<h2>Score (0-5): ${Score}</h2>
+				${Score}
 			</#if>
 		</td>
-		<td>Comments</td>
+		<td width="20%" class="comment_title">Comments</td>
 	</tr>
 	<tr>
-		<td colspan="4">Score Descriptions (Key)</td>
-		<td rowspan="7"></td>
+		<td colspan="6">Score Descriptions (Key)</td>
+		<td rowspan="7"  class="comment_body">
+			<#if Comments??>
+				${Comments}
+			</#if>
+		</td>
 	</tr>
 	<tr>
-		<td width="20">0</td>
-		<td colspan="3">
+		<td width="15" class="score">0</td>
+		<td colspan="5">
 			<#if Score_0??>
 				${Score_0}
 			</#if>
 		</td>
 	</tr>
 	<tr>
-		<td>1</td>
-		<td colspan="3">
+		<td class="score">1</td>
+		<td colspan="5">
 			<#if Score_1??>
 				${Score_1}
 			</#if>
 		</td>
 	</tr>
 	<tr>
-		<td>2</td>
-		<td colspan="3">
+		<td class="score">2</td>
+		<td colspan="5">
 			<#if Score_2??>
 				${Score_2}
 			</#if>
 		</td>
 	</tr>
 	<tr>
-		<td>3</td>
-		<td colspan="3">
+		<td class="score">3</td>
+		<td colspan="5">
 			<#if Score_3??>
 				${Score_3}
 			</#if>
 		</td>
 	</tr>
 	<tr>
-		<td>4</td>
-		<td colspan="3">
+		<td class="score">4</td>
+		<td colspan="5">
 			<#if Score_4??>
 				${Score_4}
 			</#if>
 		</td>
 	</tr>
 	<tr>
-		<td>5</td>
-		<td colspan="3">
+		<td class="score">5</td>
+		<td colspan="5">
 			<#if Score_4??>
 				${Score_4}
 			</#if>
 		</td>
 	</tr>
 </table>
+</body>
