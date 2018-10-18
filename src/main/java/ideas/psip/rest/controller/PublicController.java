@@ -2,6 +2,7 @@ package ideas.psip.rest.controller;
 
 import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
@@ -12,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
 
 import org.fit.cssbox.css.CSSNorm;
 import org.fit.cssbox.css.DOMAnalyzer;
@@ -23,6 +23,7 @@ import org.fit.cssbox.io.StreamDocumentSource;
 import org.fit.cssbox.layout.BrowserCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpEntity;
@@ -68,7 +69,7 @@ public class PublicController {
 			)
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public void getPSIP(HttpServletResponse response, @RequestParam("url") String url) {
+	public ResponseEntity<InputStreamResource> getPSIP(@RequestParam("url") String url) {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("text/plain")));
 		HttpEntity<Object> requestEntity = new HttpEntity<>(httpHeaders);
@@ -117,8 +118,23 @@ public class PublicController {
 	        contentCanvas.getConfig().setLoadBackgroundImages(true);
 
 	        contentCanvas.createLayout(size);
-	        ImageIO.write(contentCanvas.getImage(), "png", response.getOutputStream());
+	        
+	        ByteArrayOutputStream tmp = new ByteArrayOutputStream();
+	        ImageIO.write(contentCanvas.getImage(), "png", tmp);
+	        tmp.close();
+
+//	        ImageIO.write(contentCanvas.getImage(), "png", response.getOutputStream());
+	        
 	        src.close();
+	        
+	        ByteArrayInputStream b = new ByteArrayInputStream(tmp.toByteArray());
+	        
+	        
+	        return ResponseEntity.ok()
+	        		.contentLength(tmp.size())
+	                .contentType(MediaType.parseMediaType("image/png"))
+	                .body(new InputStreamResource(b));
+	        
 		} catch (TemplateNotFoundException e) {
 			e.printStackTrace();
 		} catch (MalformedTemplateNameException e) {
@@ -133,6 +149,8 @@ public class PublicController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		return ResponseEntity.badRequest().build();
 	}
 
 	@GetMapping({"/public/version"})
