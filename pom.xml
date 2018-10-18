@@ -98,67 +98,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<!-- mvn -P <profile> tomcat7:redeploy -->
-			 	<groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <url>${scheme}://${host}:${port}/manager/text</url>
-                    <server>${server}</server>
-                    <path>/profiles_api</path>
-                    <warFile>${project.build.directory}/${project.artifactId}-${project.version}.war</warFile>    
-                </configuration>
-        	</plugin>
-			<plugin> 
-				<groupId>org.asciidoctor</groupId>
-				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>1.5.3</version>
-				<executions>
-					<execution>
-						<id>generate-docs</id>
-						<phase>prepare-package</phase> 
-						<goals>
-							<goal>process-asciidoc</goal>
-						</goals>
-						<configuration>
-							<backend>html</backend>
-							<doctype>book</doctype>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency> 
-						<groupId>org.springframework.restdocs</groupId>
-						<artifactId>spring-restdocs-asciidoctor</artifactId>
-						<version>2.0.1.RELEASE</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin> 
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration> 
-							<outputDirectory>
-								${project.build.outputDirectory}/static/docs
-							</outputDirectory>
-							<resources>
-								<resource>
-									<directory>
-										${project.build.directory}/generated-docs
-									</directory>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 		
 		<resources>
@@ -169,11 +108,7 @@
 	        <resource>
 	            <directory>src/main/resources</directory>
 	            <includes>
-	            	<include>liquibase.properties</include>
 	            	<include>application.properties</include>
-	            	<include>application-dev.properties</include>
-	            	<include>application-test.properties</include>
-	            	<include>application-prod.properties</include>
 	            </includes>
 	            <filtering>true</filtering>
 	        </resource>

@@ -65,7 +65,7 @@ public class PublicController {
 	@GetMapping({"/public/psip"})
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public ResponseEntity<?> getPSIP(HttpServletResponse response, @RequestParam("url") String url) {
+	public void getPSIP(HttpServletResponse response, @RequestParam("url") String url) {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("text/plain")));
 		HttpEntity<Object> requestEntity = new HttpEntity<>(httpHeaders);
@@ -116,8 +116,6 @@ public class PublicController {
 	        contentCanvas.createLayout(size);
 	        ImageIO.write(contentCanvas.getImage(), "png", response.getOutputStream());
 	        src.close();
-	        
-			return ResponseEntity.ok(html);
 		} catch (TemplateNotFoundException e) {
 			e.printStackTrace();
 		} catch (MalformedTemplateNameException e) {
@@ -132,7 +130,6 @@ public class PublicController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return ResponseEntity.badRequest().build();
 	}
 
 	@GetMapping({"/public/version"})
