@@ -62,7 +62,10 @@ public class PublicController {
 		configuration.setClassForTemplateLoading(PublicController.class, "/");
 	}
 
-	@GetMapping({"/public/psip"})
+	@GetMapping(
+			  value = "/public/psip",
+			  produces = MediaType.IMAGE_PNG_VALUE
+			)
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public void getPSIP(HttpServletResponse response, @RequestParam("url") String url) {
