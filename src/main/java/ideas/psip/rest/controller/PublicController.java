@@ -1,5 +1,7 @@
 package ideas.psip.rest.controller;
 
+import java.awt.Dimension;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
@@ -9,8 +11,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 
+import org.fit.cssbox.css.CSSNorm;
+import org.fit.cssbox.css.DOMAnalyzer;
+import org.fit.cssbox.io.DOMSource;
+import org.fit.cssbox.io.DefaultDOMSource;
+import org.fit.cssbox.io.DocumentSource;
+import org.fit.cssbox.io.StreamDocumentSource;
+import org.fit.cssbox.layout.BrowserCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.hateoas.Link;
@@ -27,7 +37,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.RestTemplate;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import cz.vutbr.web.css.MediaSpec;
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
 import freemarker.template.MalformedTemplateNameException;
@@ -74,6 +87,36 @@ public class PublicController {
 			StringWriter writer = new StringWriter();
 			template.process(result, writer);
 			String html = writer.toString();
+			
+			Dimension size = new Dimension(1200, 600);
+			
+			DocumentSource src = new StreamDocumentSource(new ByteArrayInputStream(html.getBytes()), null, "text/html");
+			DOMSource parser = new DefaultDOMSource(src);
+			Document doc = parser.parse();
+			
+			MediaSpec media = new MediaSpec("screen");
+			//specify some media feature values
+			media.setDimensions(size.width, size.height); //set the visible area size in pixels
+			media.setDeviceDimensions(size.width, size.height); //set the display size in pixels
+			
+			DOMAnalyzer da = new DOMAnalyzer(doc, src.getURL());
+			da.setMediaSpec(media);
+			da.attributesToStyles(); //convert the HTML presentation attributes to inline styles
+			da.addStyleSheet(null, CSSNorm.stdStyleSheet(), DOMAnalyzer.Origin.AGENT); //use the standard style sheet
+			da.addStyleSheet(null, CSSNorm.userStyleSheet(), DOMAnalyzer.Origin.AGENT); //use the additional style sheet
+	        da.addStyleSheet(null, CSSNorm.formsStyleSheet(), DOMAnalyzer.Origin.AGENT); //render form fields using css
+	        da.getStyleSheets(); //load the author style sheets
+	        
+	        BrowserCanvas contentCanvas = new BrowserCanvas(da.getRoot(), da, src.getURL());
+	        contentCanvas.setAutoMediaUpdate(false); //we have a correct media specification, do not update
+	        contentCanvas.getConfig().setClipViewport(false);
+	        contentCanvas.getConfig().setLoadImages(true);
+	        contentCanvas.getConfig().setLoadBackgroundImages(true);
+
+	        contentCanvas.createLayout(size);
+	        ImageIO.write(contentCanvas.getImage(), "png", response.getOutputStream());
+	        src.close();
+	        
 			return ResponseEntity.ok(html);
 		} catch (TemplateNotFoundException e) {
 			e.printStackTrace();
@@ -84,6 +127,9 @@ public class PublicController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (TemplateException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return ResponseEntity.badRequest().build();
