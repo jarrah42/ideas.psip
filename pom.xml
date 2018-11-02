@@ -66,7 +66,10 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-		
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+		</dependency>		
 		<dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>

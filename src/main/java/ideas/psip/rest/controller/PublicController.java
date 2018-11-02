@@ -5,12 +5,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URL;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 
@@ -22,7 +21,6 @@ import org.fit.cssbox.io.DocumentSource;
 import org.fit.cssbox.io.StreamDocumentSource;
 import org.fit.cssbox.layout.BrowserCanvas;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
@@ -40,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.yaml.snakeyaml.Yaml;
 
 import cz.vutbr.web.css.MediaSpec;
 import freemarker.core.ParseException;
@@ -53,6 +52,19 @@ import ideas.psip.config.ServerConfig;
 @Controller
 public class PublicController {
 	private static Configuration configuration;
+	
+	private static final String[] keys = {
+			"target",
+			"practice",
+			"date",
+			"score",
+			"comments"
+	};
+	
+	private static final String descriptionsKey = "descriptions";
+	
+	private static final int MAX_DESCRIPTIONS = 6;
+	
 	@Autowired
 	private ServerConfig config;
 	@Autowired
@@ -73,23 +85,16 @@ public class PublicController {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setAccept(Collections.singletonList(MediaType.parseMediaType("text/plain")));
 		HttpEntity<Object> requestEntity = new HttpEntity<>(httpHeaders);
+		
 		String document = this.restTemplate
 				.exchange(url, HttpMethod.GET, requestEntity, String.class, new Object[0]).getBody();
-		Map<String, String> result = Arrays.stream(document.split("\n"))
-				.map(s -> s.split(":"))
-				.collect(Collectors.toMap(
-					a -> a[0].trim(), 
-					a -> a[1].trim()
-				));
-
-		for (Entry<String, String> entry : result.entrySet()) {
-			System.out.println(entry.getKey() + "=" + entry.getValue());
-		}
-
-		try {
+		Yaml yaml = new Yaml();
+        try {
+            Map<String, Object> card = yaml.load(document);
+            card = normalizeFormat(card);
 			Template template = configuration.getTemplate("templates/psip.html");
 			StringWriter writer = new StringWriter();
-			template.process(result, writer);
+			template.process(card, writer);
 			String html = writer.toString();
 			
 			Dimension size = new Dimension(1200, 600);
@@ -150,7 +155,7 @@ public class PublicController {
 		
 		return ResponseEntity.badRequest().build();
 	}
-
+	
 	@GetMapping({"/public/version"})
 	public ResponseEntity<?> version() {
 		return ResponseEntity
@@ -162,11 +167,28 @@ public class PublicController {
 		return ResponseEntity.ok(new Resource<>(this.config.getProfiles(), new Link[0]));
 	}
 
-	public URL getResource(String name) {
-		try {
-			return (new ClassPathResource(name)).getURL();
-		} catch (IOException var3) {
-			return null;
+	private Map<String, Object> normalizeFormat(Map<String, Object> card) {
+		Map<String, Object> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+		result.putAll(card);
+		for (String key : keys) {
+			if (!result.containsKey(key)) {
+				result.put(key, "");
+			}
 		}
+		@SuppressWarnings("unchecked")
+		List<String> descriptions = (List<String>)result.get(descriptionsKey);
+		if (descriptions == null || !(descriptions instanceof List)) {
+			descriptions = new ArrayList<>();
+			result.put(descriptionsKey, descriptions);
+		}
+		if (descriptions.size() > MAX_DESCRIPTIONS) {
+			descriptions = descriptions.subList(0, MAX_DESCRIPTIONS-1);
+		} else if (descriptions.size() < MAX_DESCRIPTIONS) {
+			int cnt = MAX_DESCRIPTIONS - descriptions.size();
+			for (int i = 0; i < cnt ; i++) {
+				descriptions.add("");
+			}
+		}
+		return result;
 	}
 }

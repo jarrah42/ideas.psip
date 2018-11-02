@@ -86,87 +86,35 @@ tr:nth-child(odd) {background-color: #e8ebf5;}
 	<tr>
 		<td class="first">Target:</td>
 		<td colspan="6" class="target">
-			<#if Target??>
-				${Target}
-			</#if>
+			${target}
 		</td>
 	</tr>
 	<tr>
 		<td class="practice_title">Practice:</td>
 		<td class="practice_body">
-			<#if Practice??>
-				${Practice}
-			</#if>
+			${practice}
 		</td>
 		<td class="date_title">Date:</td>
 		<td class="date_body">
-			<#if Date??>
-				${Date}
-			</#if>
+			${date}
 		</td>
 		<td class="score_title">Score (0-5):</td>
 		<td class="score_body">
-			<#if Score??>
-				${Score}
-			</#if>
+			${score}
 		</td>
 		<td width="20%" class="comment_title">Comments</td>
 	</tr>
 	<tr>
 		<td colspan="6">Score Descriptions (Key)</td>
 		<td rowspan="7"  class="comment_body">
-			<#if Comments??>
-				${Comments}
-			</#if>
+			${comments}
 		</td>
 	</tr>
-	<tr>
-		<td width="15" class="score">0</td>
-		<td colspan="5">
-			<#if Score_0??>
-				${Score_0}
-			</#if>
-		</td>
-	</tr>
-	<tr>
-		<td class="score">1</td>
-		<td colspan="5">
-			<#if Score_1??>
-				${Score_1}
-			</#if>
-		</td>
-	</tr>
-	<tr>
-		<td class="score">2</td>
-		<td colspan="5">
-			<#if Score_2??>
-				${Score_2}
-			</#if>
-		</td>
-	</tr>
-	<tr>
-		<td class="score">3</td>
-		<td colspan="5">
-			<#if Score_3??>
-				${Score_3}
-			</#if>
-		</td>
-	</tr>
-	<tr>
-		<td class="score">4</td>
-		<td colspan="5">
-			<#if Score_4??>
-				${Score_4}
-			</#if>
-		</td>
-	</tr>
-	<tr>
-		<td class="score">5</td>
-		<td colspan="5">
-			<#if Score_4??>
-				${Score_4}
-			</#if>
-		</td>
-	</tr>
+	<#list descriptions as description>
+		<tr>
+			<td width="15" class="score">${description?index}</td>
+			<td colspan="5">${description}</td>
+		</tr>
+	</#list>
 </table>
 </body>
