@@ -1,0 +1,9 @@
+
+Target: Some fields can be missing
+Score: 5
+Descriptions:
+  - Description of score 0
+  - Description of score 1
+  - Description of score 2
+  - Description of score 3
+comments: Keys are case insensitive
